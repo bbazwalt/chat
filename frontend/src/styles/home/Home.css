@@ -1,0 +1,11 @@
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+}
+
+.custom-bg {
+  background-color: rgb(240, 242, 245);
+}
