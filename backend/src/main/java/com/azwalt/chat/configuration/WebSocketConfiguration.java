@@ -13,7 +13,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
 	@Override
 	public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws").setAllowedOrigins("https://azwalt-chat.vercel.app").withSockJS();
+		registry.addEndpoint("/ws").setAllowedOrigins(CorsConstants.CORS_API_URL).withSockJS();
 	}
 
 	@Override
@@ -22,4 +22,5 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 		registry.enableSimpleBroker("/group", "/user", "/chat");
 		registry.setUserDestinationPrefix("/user");
 	}
+
 }

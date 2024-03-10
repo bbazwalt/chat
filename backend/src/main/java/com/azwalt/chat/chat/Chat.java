@@ -31,9 +31,7 @@ public class Chat {
 	private Long id;
 
 	private String chatName;
-
 	private String chatImage;
-	
 	private boolean isGroup;
 
 	@ManyToOne

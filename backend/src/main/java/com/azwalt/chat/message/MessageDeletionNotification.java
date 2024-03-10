@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageDeletionNotification {
-    
+
     private String type;
     private Long messageId;
+
 }

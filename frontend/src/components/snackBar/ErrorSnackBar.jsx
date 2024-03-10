@@ -26,28 +26,26 @@ const ErrorSnackBar = ({ error, dispatchType }) => {
   };
 
   return (
-    <>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={openSnackBar}
-        onClose={handleCloseSnackBar}
-      >
-        <SnackbarContent
-          style={{ backgroundColor: "red", color: "white" }}
-          message={<span>{error}</span>}
-          action={[
-            <IconButton
-              key="close"
-              aria-label="Close"
-              color="inherit"
-              onClick={handleCloseSnackBar}
-            >
-              <Close />
-            </IconButton>,
-          ]}
-        />
-      </Snackbar>
-    </>
+    <Snackbar
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      open={openSnackBar}
+      onClose={handleCloseSnackBar}
+    >
+      <SnackbarContent
+        style={{ backgroundColor: "red", color: "white" }}
+        message={<span>{error}</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={handleCloseSnackBar}
+          >
+            <Close />
+          </IconButton>,
+        ]}
+      />
+    </Snackbar>
   );
 };
 

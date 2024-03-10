@@ -2,6 +2,7 @@ package com.azwalt.chat.chat;
 
 import java.util.Set;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,8 @@ public class GroupChatRequest {
 	@NotNull
 	private Set<Long> userIds;
 
-	@NotNull
-	@Size(min = 1, max = 255, message = "{chat.constraints.chatName.Size.message}")
+	@NotBlank(message = "{chat.constraints.chatName.NotBlank.message}")
+	@Size(max = 255, message = "{chat.constraints.chatName.Size.message}")
 	private String chatName;
 
 	private String chatImage;

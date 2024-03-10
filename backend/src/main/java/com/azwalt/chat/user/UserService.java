@@ -10,10 +10,10 @@ public interface UserService {
 
 	public User findUserById(Long id) throws Exception;
 
-	public User findUserByToken(String token) throws Exception;
+	public User findUserByUsername(String username) throws Exception;
 
-	public User updateUser(Long userId, UpdateUserRequest req) throws Exception;
+	public Set<User> searchUsers(String query);
 
-	public Set<User> searchUser(String query);
+	public User updateUser(Long id, UpdateUserRequest updateUserRequest) throws Exception;
 
 }

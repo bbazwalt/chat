@@ -1,16 +1,16 @@
 import axios from "axios";
-import { API_BASE_URL_V1, AUTH_API_BASE_URL } from "../../config/apiConfig";
+import { API_BASE_URL, AUTH_API_BASE_URL } from "../../config/apiConfig";
 import {
-  SIGN_OUT,
-  GET_USERFAILURE,
-  GET_USERREQUEST,
-  GET_USERSUCCESS,
+  FIND_REQ_USER_FAILURE,
+  FIND_REQ_USER_REQUEST,
+  FIND_REQ_USER_SUCCESS,
   SEARCH_USER_FAILURE,
   SEARCH_USER_REQUEST,
   SEARCH_USER_SUCCESS,
   SIGN_IN_FAILURE,
   SIGN_IN_REQUEST,
   SIGN_IN_SUCCESS,
+  SIGN_OUT,
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
@@ -24,17 +24,17 @@ export const signUp = (reqData, authSignIn) => async (dispatch) => {
   try {
     axios.defaults.baseURL = AUTH_API_BASE_URL;
     const { data } = await axios.post("/signup", reqData);
-    if (data.token) {
+    if (data.token && authSignIn) {
       authSignIn(data.token);
-      dispatch({ type: SIGN_UP_SUCCESS, payload: data.token });
     }
+    dispatch({ type: SIGN_UP_SUCCESS, payload: data.token });
   } catch (error) {
     dispatch({
       type: SIGN_UP_FAILURE,
       payload: error?.response?.data?.message,
     });
   } finally {
-    axios.defaults.baseURL = API_BASE_URL_V1;
+    axios.defaults.baseURL = API_BASE_URL;
   }
 };
 
@@ -43,30 +43,29 @@ export const signIn = (reqData, authSignIn) => async (dispatch) => {
 
   try {
     axios.defaults.baseURL = AUTH_API_BASE_URL;
-    const { data } = await axios.post(`${AUTH_API_BASE_URL}/signin`, reqData);
-
-    if (data.token) {
+    const { data } = await axios.post("/signin", reqData);
+    if (data.token && authSignIn) {
       authSignIn(data.token);
-      dispatch({ type: SIGN_IN_SUCCESS, payload: data.token });
     }
+    dispatch({ type: SIGN_IN_SUCCESS, payload: data.token });
   } catch (error) {
     dispatch({
       type: SIGN_IN_FAILURE,
       payload: error?.response?.data?.message,
     });
   } finally {
-    axios.defaults.baseURL = API_BASE_URL_V1;
+    axios.defaults.baseURL = API_BASE_URL;
   }
 };
 
-export const currentUser = (authSignOut) => async (dispatch) => {
-  dispatch({ type: GET_USERREQUEST });
+export const findReqUser = (authSignOut) => async (dispatch) => {
+  dispatch({ type: FIND_REQ_USER_REQUEST });
   try {
-    const { data } = await axios.get(`/users/profile`);
-    dispatch({ type: GET_USERSUCCESS, payload: data });
+    const { data } = await axios.get("/users/profile");
+    dispatch({ type: FIND_REQ_USER_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_USERFAILURE,
+      type: FIND_REQ_USER_FAILURE,
       payload: error?.response?.data?.message,
     });
     if (error?.response?.data?.status === false) {
@@ -75,7 +74,7 @@ export const currentUser = (authSignOut) => async (dispatch) => {
   }
 };
 
-export const searchUser = (reqData) => async (dispatch) => {
+export const searchUsers = (reqData) => async (dispatch) => {
   dispatch({ type: SEARCH_USER_REQUEST });
   try {
     const { data } = await axios.get(`/users/search?name=${reqData.keyword}`);
@@ -91,8 +90,8 @@ export const searchUser = (reqData) => async (dispatch) => {
 export const updateUser = (reqData) => async (dispatch) => {
   dispatch({ type: UPDATE_USER_REQUEST });
   try {
-    await axios.put(`/users`, reqData.data);
-    dispatch({ type: UPDATE_USER_SUCCESS, payload: reqData.data });
+    await axios.put("/users/profile", reqData);
+    dispatch({ type: UPDATE_USER_SUCCESS, payload: reqData });
   } catch (error) {
     dispatch({
       type: UPDATE_USER_FAILURE,

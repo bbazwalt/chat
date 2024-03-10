@@ -1,26 +1,37 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getUsersChat } from "../chat/action";
-import { currentUser } from "./action";
+import { REQUEST_HEADER } from "../../config/apiConfig";
+import { findReqUser } from "./action";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
+const setAxiosToken = (token) => {
+  axios.defaults.headers.common[REQUEST_HEADER] = `Bearer ${token}`;
+};
+
+const deleteAxiosToken = () => {
+  delete axios.defaults.headers.common[REQUEST_HEADER];
+};
+
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(
-    localStorage.getItem("chat-token")
-  );
+  const [token, setToken] = useState(() => {
+    const authToken = localStorage.getItem("chat-token");
+    if (authToken) {
+      setAxiosToken(authToken);
+    }
+    return authToken || null;
+  });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      dispatch(currentUser(authSignOut));
-      dispatch(getUsersChat());
+      setAxiosToken(token);
+      dispatch(findReqUser(authSignOut));
     } else {
-      delete axios.defaults.headers.common["Authorization"];
+      deleteAxiosToken();
     }
   }, [token]);
 
@@ -28,13 +39,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("chat-token");
     localStorage.setItem("chat-token", token);
     setToken(token);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    setAxiosToken(token);
   };
 
   const authSignOut = () => {
     localStorage.removeItem("chat-token");
     setToken(null);
-    delete axios.defaults.headers.common["Authorization"];
+    deleteAxiosToken();
   };
 
   return (

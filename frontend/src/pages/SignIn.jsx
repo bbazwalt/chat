@@ -3,10 +3,10 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import LoadingText from "../components/loadingText/LoadingText";
-import { signIn } from "../redux/auth/action";
-import { CLEAR_AUTH_ERROR } from "../redux/auth/actionType";
-import { useAuth } from "../redux/auth/authContext";
+import LoadingText from "../components/infoText/LoadingText";
+import { signIn } from "../redux/user/action";
+import { CLEAR_USER_ERROR } from "../redux/user/actionType";
+import { useAuth } from "../redux/user/authContext";
 
 const validationSchema = Yup.object({
   username: Yup.string()
@@ -26,11 +26,16 @@ const validationSchema = Yup.object({
 });
 
 const SignIn = () => {
+  const isLoading = useSelector((store) => store.user.isLoading);
+  const error = useSelector((store) => store.user.error);
+
+  const { authSignIn } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { authSignIn } = useAuth();
-  const error = useSelector((store) => store.auth.error);
-  const isLoading = useSelector((store) => store.auth.isLoading);
+
+  const handleOnClick = () => {
+    dispatch({ type: CLEAR_USER_ERROR });
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -43,10 +48,6 @@ const SignIn = () => {
     },
   });
 
-  const handleOnClick = () => {
-    dispatch({ type: CLEAR_AUTH_ERROR });
-  };
-
   return (
     <div
       onClick={handleOnClick}
@@ -55,53 +56,47 @@ const SignIn = () => {
       <div>
         <h1 className="my-4 text-center text-3xl font-semibold">Sign In</h1>
       </div>
-      <div className=" min-h-full w-[30rem] rounded-md bg-white  p-10 px-8 pb-8 shadow-md">
+      <div className=" min-h-full w-[30rem] rounded-md bg-white  px-8 pb-8 pt-10 shadow-md">
         <form onSubmit={formik.handleSubmit} className="space-y-4">
-          <div>
-            <TextField
-              required
-              fullWidth
-              label="Username"
-              name="username"
-              autoComplete="username"
-              id="username"
-              variant="outlined"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={formik.touched.username && formik.errors.username}
-            />
-          </div>
-          <div>
-            <TextField
-              required
-              fullWidth
-              label="Password"
-              name="password"
-              autoComplete="password"
-              type="password"
-              id="password"
-              variant="outlined"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-          </div>
-          <div>
-            <Button
-              disabled={isLoading}
-              className="w-full bg-[#1976D2]"
-              type="submit"
-              variant="contained"
-              size="large"
-              sx={{ padding: ".8rem 0" }}
-            >
-              SIGN IN
-            </Button>
-          </div>
+          <TextField
+            required
+            fullWidth
+            label="Username"
+            name="username"
+            autoComplete="username"
+            id="username"
+            variant="outlined"
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
+          />
+          <TextField
+            required
+            fullWidth
+            label="Password"
+            name="password"
+            autoComplete="password"
+            type="password"
+            id="password"
+            variant="outlined"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+          />
+          <Button
+            disabled={isLoading}
+            className="w-full bg-[#1976D2]"
+            type="submit"
+            variant="contained"
+            size="large"
+            sx={{ padding: ".8rem 0" }}
+          >
+            SIGN IN
+          </Button>
         </form>
         {error && (
           <div className="mt-3 text-center">
@@ -110,7 +105,7 @@ const SignIn = () => {
         )}
         {isLoading && <LoadingText />}
         <div className="mt-5 flex items-center justify-center space-x-1">
-          <p className="m-0">Don't have an account yet?</p>
+          <p>Don't have an account yet?</p>
           <Button
             variant="text"
             sx={{ mt: "0.15rem" }}

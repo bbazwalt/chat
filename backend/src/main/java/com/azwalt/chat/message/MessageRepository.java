@@ -17,4 +17,5 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 	@Modifying
 	@Query("DELETE FROM Message m WHERE m.chat.id=:chatId")
 	public void deleteByChatId(@Param("chatId") Long chatId);
+	
 }

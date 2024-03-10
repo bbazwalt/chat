@@ -9,25 +9,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CustomUserService implements UserDetailsService {
 
-	private UserRepository userRepository;
-
-	public CustomUserService(UserRepository userRepository) {
-		super();
-		this.userRepository = userRepository;
-	}
+	private final UserRepository userRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, IllegalArgumentException {
-		if (username == null) {
-			throw new IllegalArgumentException("Username must not be null.");
-		}
-		User user = userRepository.findByUsername(username);
-		if (user == null) {
-			throw new UsernameNotFoundException("No user found with the given username.");
-		}
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("No user found with the given username."));
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
 				authorities);

@@ -1,3 +1,4 @@
+import { SIGN_OUT } from "../user/actionType";
 import {
   CLEAR_MESSAGE_ERROR,
   CREATE_NEW_MESSAGE_FAILURE,
@@ -23,7 +24,6 @@ export const messageReducer = (state = initialState, { type, payload }) => {
     case GET_ALL_MESSAGES_REQUEST:
     case DELETE_MESSAGE_REQUEST:
       return { ...state, isLoading: true, error: null };
-
     case CREATE_NEW_MESSAGE_SUCCESS:
       return {
         ...state,
@@ -45,13 +45,19 @@ export const messageReducer = (state = initialState, { type, payload }) => {
         isLoading: false,
         error: null,
       };
-
     case CREATE_NEW_MESSAGE_FAILURE:
     case GET_ALL_MESSAGES_FAILURE:
     case DELETE_MESSAGE_FAILURE:
       return { ...state, isLoading: false, error: payload };
     case CLEAR_MESSAGE_ERROR:
-      return { ...state, isLoading: false, error: null };
+      return { ...state, error: null };
+    case SIGN_OUT:
+      return {
+        ...state,
+        messages: [],
+        isLoading: false,
+        error: null,
+      };
     default:
       return state;
   }

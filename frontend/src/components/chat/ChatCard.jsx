@@ -13,8 +13,21 @@ const ChatCard = ({
   handleCurrentChat,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const menuRef = useRef(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -35,48 +48,32 @@ const ChatCard = ({
     });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuRef]);
-
   return (
-    <div className="flex items-center justify-center py-2 group cursor-pointer">
+    <div className="flex cursor-pointer items-center justify-center py-2 transition duration-300  hover:bg-zinc-100">
       <div className="w-[20%]">
         <img className="h-14 w-14 rounded-full" src={userImg} alt={name} />
       </div>
-      <div className=" w-[80%]">
-        <div className="flex justify-between items-center">
-          <p className="text-lg">{name}</p>
-          {deleteIcon && (
-            <div className="relative ml-10" ref={menuRef}>
-              <IoIosArrowDown
-                className="text-base cursor-pointer"
-                onClick={onArrowDownClick}
-              />
-              {menuOpen && (
-                <div className="absolute right-0 bg-white shadow-md rounded-md z-10">
-                  <div
-                    className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={handleDelete}
-                  >
-                    <MdDeleteOutline className="text-md text-red-700" />
-                    <span className="ml-2">Delete</span>
-                  </div>
+      <div className="flex w-[80%] items-center justify-between">
+        <p className="text-lg">{name}</p>
+        {deleteIcon && (
+          <div className="relative ml-10" ref={menuRef}>
+            <IoIosArrowDown
+              className="cursor-pointer text-base"
+              onClick={onArrowDownClick}
+            />
+            {menuOpen && (
+              <div className="absolute right-0 z-10 rounded-md bg-white shadow-md">
+                <div
+                  className="flex cursor-pointer items-center p-2 hover:bg-gray-100"
+                  onClick={handleDelete}
+                >
+                  <MdDeleteOutline className="text-md text-red-700" />
+                  <span className="ml-2">Delete</span>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

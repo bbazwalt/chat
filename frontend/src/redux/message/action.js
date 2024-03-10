@@ -32,7 +32,7 @@ export const createMessage =
     }
   };
 
-export const getAllMessages = (reqData) => async (dispatch) => {
+export const findAllMessages = (reqData) => async (dispatch) => {
   dispatch({ type: GET_ALL_MESSAGES_REQUEST });
   try {
     const { data } = await axios.get(`/messages/chat/${reqData.chatId}`);

@@ -7,23 +7,24 @@ import {
   CREATE_NEW_MESSAGE_SUCCESS,
   DELETE_MESSAGE_SUCCESS,
 } from "../../redux/message/actionType";
-import { connectWebSocket, subscribeToChat } from "../../utils/websocket";
 import MessageCard from "../message/MessageCard";
 
 import { createMessage } from "../../redux/message/action";
+import { connectWebSocket, subscribeToChat } from "../../utils/websocket";
+import EmptyItemsText from "../infoText/EmptyItemsText";
 import ErrorSnackBar from "../snackBar/ErrorSnackBar";
 import blankGroupPicture from "./../../assets/blank-group-picture.jpg";
 import blankProfilePicture from "./../../assets/blank-profile-picture.png";
-import EmptyItemsText from "../infoText/EmptyItemsText";
 
 const RightSection = ({ currentChat }) => {
-  const dispatch = useDispatch();
-  const messagesEndRef = useRef(null);
+  const [content, setContent] = useState("");
+
   const messages = useSelector((store) => store.message.messages);
-  const auth = useSelector((store) => store.auth);
+  const auth = useSelector((store) => store.user);
   const error = useSelector((store) => store.message.error);
 
-  const [content, setContent] = useState("");
+  const dispatch = useDispatch();
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     scrollIntoView();
@@ -32,13 +33,6 @@ const RightSection = ({ currentChat }) => {
   useEffect(() => {
     connectWebSocket();
   }, []);
-
-  const scrollIntoView = () => {
-    const timer = setTimeout(() => {
-      scrollToBottom();
-    }, 100);
-    return () => clearTimeout(timer);
-  };
 
   useEffect(() => {
     if (auth.user && currentChat) {
@@ -49,7 +43,6 @@ const RightSection = ({ currentChat }) => {
 
   const onMessageReceive = (payload) => {
     const receivedMessage = JSON.parse(payload.body);
-
     if (receivedMessage?.type === "deletion") {
       const messageId = Number(receivedMessage.messageId);
       dispatch({
@@ -74,15 +67,23 @@ const RightSection = ({ currentChat }) => {
     }
   };
 
+  const scrollIntoView = () => {
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+    return () => clearTimeout(timer);
+  };
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
     currentChat && (
       <div className="relative w-[70%] bg-slate-200">
-        <div className="header absolute top-0 z-10 w-full bg-[#f0f2f5]">
+        <div className="absolute top-0 z-10 w-full bg-[#f0f2f5]">
           <div className="flex justify-between">
             <div className="flex items-center space-x-4 px-3 py-3">
               <img
@@ -110,11 +111,10 @@ const RightSection = ({ currentChat }) => {
                     : currentChat.users[0].fullName}
               </p>
             </div>
-            <div className="flex items-center space-x-4 px-3 py-3"></div>
           </div>
         </div>
-        <div className={` h-[36.75rem] overflow-y-scroll px-10`}>
-          <div className="mt-20 flex flex-col justify-center space-y-1 py-2">
+        <div className={`h-[90vh] overflow-y-auto px-10`}>
+          <div className="mt-20 flex flex-col space-y-1 py-2">
             {messages.length === 0 ? (
               <EmptyItemsText content={"messages"} />
             ) : (
@@ -135,15 +135,15 @@ const RightSection = ({ currentChat }) => {
             <div ref={messagesEndRef} />
           </div>
         </div>
-        <div className="footer absolute bottom-0 w-full bg-[#f0f2f5] py-3 text-2xl">
-          <div className="relative flex items-center justify-between px-5">
+        <div className="absolute bottom-0 w-full bg-[#f0f2f5] py-3 text-2xl">
+          <div className="flex items-center justify-between px-5">
             <input
               className="w-[95%] rounded-md border-none bg-white py-2 pl-4 text-lg outline-none"
               type="text"
               onChange={(e) => {
                 setContent(e.target.value.trimStart());
               }}
-              placeholder="Type a message"
+              placeholder="Write a message"
               value={content}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {

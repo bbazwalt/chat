@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { deleteMessage, getAllMessages } from "../../redux/message/action";
+import { deleteMessage, findAllMessages } from "../../redux/message/action";
 import { getLocalDateString } from "../../utils/otherUtils";
 
 const MessageCard = ({
@@ -15,11 +15,11 @@ const MessageCard = ({
   id,
   currentChat,
 }) => {
-  const dispatch = useDispatch();
-
-  const localDateString = getLocalDateString(createdAt);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const dispatch = useDispatch();
   const menuRef = useRef(null);
+  const localDateString = getLocalDateString(createdAt);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,13 +27,12 @@ const MessageCard = ({
         setMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuRef]);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -41,32 +40,32 @@ const MessageCard = ({
   const handleDelete = () => {
     toggleMenu();
     dispatch(deleteMessage({ currentChat, id })).then(() => {
-      dispatch(getAllMessages({ chatId }));
+      dispatch(findAllMessages({ chatId }));
     });
   };
 
   return (
     <div
-      className={`flex flex-col py-2 px-2 rounded-md max-w-[100%] ${
+      className={`flex max-w-[100%] flex-col rounded-md px-2 py-2 ${
         !isReqUserMessage
           ? "self-start bg-white"
           : "items-end self-end bg-gray-300"
       }`}
     >
       {isGroup && <p className="text-xs font-semibold">{fullName}</p>}
-      <p className="text-base font-bold break-all">{content}</p>
-      <div className="flex justify-between items-center rounded-md">
+      <p className="break-all text-base font-bold">{content}</p>
+      <div className="flex items-center justify-between rounded-md">
         <p className="text-xs font-light">{localDateString}</p>
         {isReqUserMessage && (
           <div className="relative" ref={menuRef}>
             <IoIosArrowDown
-              className="text-base -z-10 cursor-pointer"
+              className="-z-10 cursor-pointer text-base"
               onClick={toggleMenu}
             />
             {menuOpen && (
-              <div className="absolute right-0 bg-white shadow-md rounded-md z-10">
+              <div className="absolute right-0 z-10 rounded-md bg-white shadow-md">
                 <div
-                  className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+                  className="flex cursor-pointer items-center p-2 hover:bg-gray-100"
                   onClick={handleDelete}
                 >
                   <MdDeleteOutline className="text-sm text-red-700" />

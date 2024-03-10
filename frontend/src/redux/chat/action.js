@@ -9,9 +9,9 @@ import {
   DELETE_CHAT_FAILURE,
   DELETE_CHAT_REQUEST,
   DELETE_CHAT_SUCCESS,
-  GET_USERS_CHAT_FAILURE,
-  GET_USERS_CHAT_REQUEST,
-  GET_USERS_CHAT_SUCCESS,
+  GET_ALL_CHATS_FAILURE,
+  GET_ALL_CHATS_REQUEST,
+  GET_ALL_CHATS_SUCCESS,
 } from "./actionType";
 
 export const createChat = (userId) => async (dispatch) => {
@@ -40,14 +40,14 @@ export const createGroup = (groupData) => async (dispatch) => {
   }
 };
 
-export const getUsersChat = () => async (dispatch) => {
-  dispatch({ type: GET_USERS_CHAT_REQUEST });
+export const findAllChats = () => async (dispatch) => {
+  dispatch({ type: GET_ALL_CHATS_REQUEST });
   try {
     const { data } = await axios.get(`/chats`);
-    dispatch({ type: GET_USERS_CHAT_SUCCESS, payload: data });
+    dispatch({ type: GET_ALL_CHATS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: GET_USERS_CHAT_FAILURE,
+      type: GET_ALL_CHATS_FAILURE,
       payload: error?.response?.data?.message,
     });
   }

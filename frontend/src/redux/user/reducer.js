@@ -1,15 +1,15 @@
 import {
-  CLEAR_AUTH_ERROR,
-  SIGN_OUT,
-  GET_USERFAILURE,
-  GET_USERREQUEST,
-  GET_USERSUCCESS,
+  CLEAR_USER_ERROR,
+  FIND_REQ_USER_FAILURE,
+  FIND_REQ_USER_REQUEST,
+  FIND_REQ_USER_SUCCESS,
   SEARCH_USER_FAILURE,
   SEARCH_USER_REQUEST,
   SEARCH_USER_SUCCESS,
   SIGN_IN_FAILURE,
   SIGN_IN_REQUEST,
   SIGN_IN_SUCCESS,
+  SIGN_OUT,
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
@@ -19,27 +19,27 @@ import {
 } from "./actionType";
 
 const initialState = {
-  isLoading: false,
   user: null,
-  searchUser: [],
+  searchUsers: [],
+  isLoading: false,
   error: null,
 };
 
-export const authReducer = (state = initialState, { type, payload }) => {
+export const userReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SIGN_UP_REQUEST:
     case SIGN_IN_REQUEST:
-    case GET_USERREQUEST:
+    case FIND_REQ_USER_REQUEST:
     case SEARCH_USER_REQUEST:
     case UPDATE_USER_REQUEST:
       return { ...state, isLoading: true, error: null };
     case SIGN_UP_SUCCESS:
     case SIGN_IN_SUCCESS:
       return { ...state, isLoading: false, error: null };
-    case GET_USERSUCCESS:
+    case FIND_REQ_USER_SUCCESS:
       return { ...state, user: payload, isLoading: false, error: null };
     case SEARCH_USER_SUCCESS:
-      return { ...state, searchUser: payload, isLoading: false, error: null };
+      return { ...state, searchUsers: payload, isLoading: false, error: null };
     case UPDATE_USER_SUCCESS:
       if (payload.fullName) {
         return {
@@ -66,18 +66,18 @@ export const authReducer = (state = initialState, { type, payload }) => {
       }
     case SIGN_UP_FAILURE:
     case SIGN_IN_FAILURE:
-    case GET_USERFAILURE:
+    case FIND_REQ_USER_FAILURE:
     case SEARCH_USER_FAILURE:
     case UPDATE_USER_FAILURE:
       return { ...state, isLoading: false, error: payload };
-    case CLEAR_AUTH_ERROR:
-      return { ...state, isLoading: false, error: null };
+    case CLEAR_USER_ERROR:
+      return { ...state, error: null };
     case SIGN_OUT:
       return {
         ...state,
         isLoading: false,
         user: null,
-        searchUser: [],
+        searchUsers: [],
         error: null,
       };
     default:
