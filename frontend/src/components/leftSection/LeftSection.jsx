@@ -23,12 +23,12 @@ const LeftSection = ({ currentChat, setCurrentChat, handleCurrentChat }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((store) => store.user.user);
-  const searchUsers = useSelector((store) => store.user.searchUsers);
+  const searchUsersState = useSelector((store) => store.user.searchUsers);
   const chats = useSelector((store) => store.chat.chats);
   const isLoading = useSelector((store) => store.chat.isLoading);
   const error = useSelector((store) => store.chat.error);
 
-  const { authSignOut } = useAuth();
+  const { token, authSignOut } = useAuth();
   const [query, setQuery] = useState("");
   const [isProfile, setIsProfile] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -41,10 +41,10 @@ const LeftSection = ({ currentChat, setCurrentChat, handleCurrentChat }) => {
   }, [currentChat, dispatch]);
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       dispatch(findAllChats());
     }
-  }, [user]);
+  }, [token]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -146,15 +146,15 @@ const LeftSection = ({ currentChat, setCurrentChat, handleCurrentChat }) => {
             />
             <AiOutlineSearch className="absolute left-7 right-3 top-7" />
           </div>
-          {isLoading && !chats ? (
+          {isLoading && chats?.length === 0 ? (
             <LoadingText />
           ) : (
             <div className="h-[80vh] overflow-y-auto bg-white px-3">
               {query &&
-                (searchUsers?.length === 0 ? (
+                (searchUsersState?.length && !isLoading === 0 ? (
                   <EmptyItemsText content="users" />
                 ) : (
-                  searchUsers?.map(
+                  searchUsersState?.map(
                     (item) =>
                       item?.id !== user?.id && (
                         <div
@@ -174,7 +174,7 @@ const LeftSection = ({ currentChat, setCurrentChat, handleCurrentChat }) => {
                   )
                 ))}
               {!query &&
-                (Array.isArray(chats) && chats.length === 0 ? (
+                (Array.isArray(chats) && chats.length === 0 && !isLoading ? (
                   <EmptyItemsText content="chats" />
                 ) : (
                   chats.map((item) => (
