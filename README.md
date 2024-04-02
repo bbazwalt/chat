@@ -1,6 +1,6 @@
 # chat
 
-Chat Web App • Live Link: https://azwalt-chat.vercel.app/
+Chat Web App • Live Link: https://azwalt-chat.vercel.app
 
 • Tech Stack: Java, Spring Boot, JavaScript, React, Redux, Tailwind CSS, MUI, MySQL, Hibernate, Docker, Render, Vercel & TiDB Cloud.
 
