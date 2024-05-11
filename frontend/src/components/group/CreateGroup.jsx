@@ -14,7 +14,7 @@ const CreateGroup = ({ setIsGroup, onClick }) => {
   const [query, setQuery] = useState("");
 
   const user = useSelector((store) => store.user.user);
-  const searchUsers = useSelector((store) => store.user.searchUsers);
+  const searchedUsers = useSelector((store) => store.user.searchUsers);
 
   const dispatch = useDispatch();
 
@@ -83,10 +83,10 @@ const CreateGroup = ({ setIsGroup, onClick }) => {
           </div>
           <div className={`h-[79vh] overflow-y-auto bg-white px-3 `}>
             {query &&
-              (searchUsers?.length === 0 ? (
+              (searchedUsers?.length === 0 ? (
                 <EmptyItemsText content={"users"} />
               ) : (
-                searchUsers
+                searchedUsers
                   ?.filter((item) => item.id !== user.id)
                   .map(
                     (item) =>
